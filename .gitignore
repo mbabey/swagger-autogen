@@ -105,7 +105,7 @@ dist
 .DS_Store
 package-lock.json
 test/*.json
-swagger_output.json
+swagger-output.json
 swagger.js
 .vscode/launch.json
 .idea
