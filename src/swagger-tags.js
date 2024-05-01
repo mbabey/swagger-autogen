@@ -781,6 +781,35 @@ function getOperationId(data, reference) {
  * TODO: fill
  * @param {*} data
  */
+function getApiPattern(data, reference) {
+    try {
+        let swaggerApiPattern = data.split(new RegExp(`${statics.SWAGGER_TAG}.x-api-pattern\\s*\\=\\s*`))[1];
+        swaggerApiPattern = swaggerApiPattern.split('\n')[0];
+
+        const quotMark = swaggerApiPattern[0];
+        if ((quotMark == '"' || quotMark == "'" || quotMark == '`') && swaggerApiPattern.split(quotMark).length > 2) {
+            let aux = swaggerApiPattern.replaceAll(`\\${quotMark}`, statics.STRING_BREAKER + 'quotMark' + statics.STRING_BREAKER);
+            aux = aux.split(quotMark);
+            swaggerApiPattern = aux[1];
+            swaggerApiPattern = swaggerApiPattern.replaceAll(statics.STRING_BREAKER + 'quotMark' + statics.STRING_BREAKER, `\\${quotMark}`);
+            return swaggerApiPattern;
+        }
+        swaggerApiPattern = swaggerApiPattern.trim();
+        swaggerApiPattern = swaggerApiPattern.replace(new RegExp('^["|\'|`]'), '');
+        swaggerApiPattern = swaggerApiPattern.replace(new RegExp('["|\'|`]$'), '');
+        return swaggerApiPattern;
+    } catch (err) {
+        if (!getDisableLogs()) {
+            console.error(`[swagger-autogen]: '${statics.SWAGGER_TAG}.x-api-pattern' out of structure in\n'${reference.filePath}' ... ${reference.predefPattern}.${reference.method}('${reference.path}', ...)`);
+        }
+        return '';
+    }
+}
+
+/**
+ * TODO: fill
+ * @param {*} data
+ */
 function getTags(data, reference) {
     try {
         let tags = [];
@@ -852,6 +881,7 @@ module.exports = {
     getSecurityTag,
     getSummary,
     getOperationId,
+    getApiPattern,
     getDeprecatedTag,
     getRequestBodyTag,
     setLanguage,

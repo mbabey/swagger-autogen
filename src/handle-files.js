@@ -1196,6 +1196,7 @@ function readEndpointFile(filePath, pathRoute = '', relativePath, receivedRouteM
                         objEndpoint[path][method].summary = undefined;
                         objEndpoint[path][method].description = '';
                         objEndpoint[path][method].operationId = undefined;
+                        objEndpoint[path][method]['x-api-pattern'] = undefined;
                         objEndpoint[path][method].consumes = undefined;
                         objEndpoint[path][method].produces = undefined;
                         objEndpoint[path][method].parameters = undefined;
@@ -1323,6 +1324,10 @@ function readEndpointFile(filePath, pathRoute = '', relativePath, receivedRouteM
 
                             if (endpoint && endpoint.includes(statics.SWAGGER_TAG + '.operationId')) {
                                 objEndpoint[path][method]['operationId'] = swaggerTags.getOperationId(endpoint, reference);
+                            }
+
+                            if (endpoint && endpoint.includes(statics.SWAGGER_TAG + '.x-api-pattern')) {
+                                objEndpoint[path][method]['x-api-pattern'] = swaggerTags.getApiPattern(endpoint, reference);
                             }
 
                             if (endpoint && endpoint.includes(statics.SWAGGER_TAG + '.summary')) {
